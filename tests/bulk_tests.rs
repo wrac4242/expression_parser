@@ -47,8 +47,8 @@ fn should_succeed_from_file() {
 }
 
 #[test]
-fn should_fail_from_file() {
-	let file_name = "tests/should_fail.txt";
+fn should_error_from_file() {
+	let file_name = "tests/should_error.txt";
 	let test_expressions = parse_file(file_name).unwrap();
 
 	for i in test_expressions {

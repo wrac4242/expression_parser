@@ -12,7 +12,7 @@ pub fn parse_string<S: Into<String>>(parse_string: S) -> Result<usize, GenError>
 }
 
 // supports + - * / ()
-fn tokenize<'a>(to_tokenise: String) -> Vec<Token> {
+fn tokenize(to_tokenise: String) -> Vec<Token> {
 	// create iterator somehow over the string, match them into their syntaxes? 
 	let mut token_stream = Vec::new();
 	
@@ -30,3 +30,4 @@ fn tokenize<'a>(to_tokenise: String) -> Vec<Token> {
 
 	token_stream
 }
+

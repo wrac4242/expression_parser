@@ -25,6 +25,14 @@ impl Token {
 	pub fn get_type(&self) -> Tokens {
 		self.token_type
 	}
+
+	pub fn is_operator(&self) -> bool {
+		return if matches!(self.token_type, Tokens::OpenBracket) 
+			|| matches!(self.token_type, Tokens::CloseBracket) 
+			|| matches!(self.token_type, Tokens::Number(_)) {
+			false
+		} else { true }
+	}
 }
 
 // supports + - * / ()

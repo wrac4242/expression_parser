@@ -1,4 +1,4 @@
-use expression_parser;
+
 
 use std::fs::File;
 use std::io::{self, prelude::*, BufReader};
@@ -20,7 +20,7 @@ fn parse_file(to_read: &str) -> io::Result<Vec<ExprTest>> {
 		let line = line.unwrap();
         let mut text = line.split(',');
 		let exp = text.next().unwrap().to_string();
-		if exp.starts_with("//") || exp == "" { 
+		if exp.starts_with("//") || exp.is_empty() { 
 			continue; 
 		}
 

@@ -54,3 +54,16 @@ pub fn tokenize(to_tokenise: String) -> Vec<Token> {
 
 	token_stream
 }
+
+pub fn get_priority(t: Tokens) -> usize {
+	// higher number, higher priority
+	// 0 is used to show not valid
+	// + - => 1, * / => 2
+	match t {
+		Tokens::Plus => 1,
+		Tokens::Minus => 1,
+		Tokens::Multiply => 2,
+		Tokens::Divide => 2,
+		_ => 0
+	}
+}

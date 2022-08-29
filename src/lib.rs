@@ -5,7 +5,7 @@ mod abstract_syntax;
 use abstract_syntax::form_syntax_tree;
 
 #[derive(Debug)]
-pub enum GenError { Unknown }
+pub enum GenError { Unknown, InvalidMath }
 
 pub fn parse_string<S: Into<String>>(parse_string: S) -> Result<usize, GenError> {
 	let token_stream = tokenize(parse_string.into());

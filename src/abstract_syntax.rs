@@ -1,4 +1,4 @@
-use std::panic::PanicInfo;
+use crate::GenError;
 
 use super::tokens::{Token, Tokens};
 
@@ -29,19 +29,19 @@ impl <'a> Node<'a> {
 		}
 	}
 	// get val, recursively if not new val
-	pub fn get_val(&self) -> usize {
-		return match self.node_type {
+	pub fn get_val(&self) -> Result<usize, GenError> {
+		Ok(match self.node_type {
 			Tokens::Number(num) => { num },
-			Tokens::Plus => { self.children.as_ref().unwrap().node1.get_val() + self.children.as_ref().unwrap().node2.get_val() },
-			Tokens::Minus => { self.children.as_ref().unwrap().node1.get_val() - self.children.as_ref().unwrap().node2.get_val() },
-			Tokens::Multiply => { self.children.as_ref().unwrap().node1.get_val() * self.children.as_ref().unwrap().node2.get_val() },
-			Tokens::Divide => { self.children.as_ref().unwrap().node1.get_val() / self.children.as_ref().unwrap().node2.get_val() },
+			Tokens::Plus => { self.children.as_ref().unwrap().node1.get_val()? + self.children.as_ref().unwrap().node2.get_val()? },
+			Tokens::Minus => { self.children.as_ref().unwrap().node1.get_val()? - self.children.as_ref().unwrap().node2.get_val()? },
+			Tokens::Multiply => { self.children.as_ref().unwrap().node1.get_val()? * self.children.as_ref().unwrap().node2.get_val()? },
+			Tokens::Divide => { self.children.as_ref().unwrap().node1.get_val()? / self.children.as_ref().unwrap().node2.get_val()? },
 			_ => { panic!("unreachable") }
-		} 
+		} )
 	}
 }
 
-pub fn form_syntax_tree(token_stream: Vec<Token>) {
+pub fn form_syntax_tree<'a>(token_stream: Vec<Token>) -> Result<Node<'a>, GenError> {
 
 	todo!();
 }

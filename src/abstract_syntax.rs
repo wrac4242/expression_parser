@@ -43,6 +43,7 @@ impl Node {
 }
 
 pub fn form_syntax_tree(token_stream: Vec<Token>) -> Result<Node, GenError> {
+	// uses the shunting yard algorithm https://en.wikipedia.org/wiki/Shunting_yard_algorithm
 	let mut output_stack: Vec<Node> = Vec::new();
 	let mut operator_stack: Vec<Token> = Vec::new();
 

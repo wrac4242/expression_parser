@@ -42,6 +42,7 @@ fn should_succeed_from_file() {
 	let test_expressions = parse_file(file_name).unwrap();
 
 	for i in test_expressions {
+		println!("{}", i.exp);
 		assert_eq!(expression_parser::parse_string(i.exp).unwrap(), i.res);
 	}
 }

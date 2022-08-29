@@ -13,6 +13,7 @@ struct Children {
 }
 
 impl Node {
+
 	// new with children
 	pub fn new_w_children(node: Token, node1: Node, node2: Node) -> Node {
 		if !node.is_operator() { panic!("node type is wrong") }
@@ -48,9 +49,11 @@ pub fn form_syntax_tree(token_stream: Vec<Token>) -> Result<Node, GenError> {
 	for i in token_stream {
 		let token_type = i.get_type();
 		if let Tokens::Number(val) = token_type {
-			output_stack.push(Node::new_w_val(val))
+			output_stack.push(Node::new_w_val(val));
+			continue
 		} else if matches!(token_type, Tokens::OpenBracket) {
 			operator_stack.push(i);
+			continue
 		} else if matches!(token_type, Tokens::CloseBracket) {
 			// push operators up to l bracket to stack
 			loop {
@@ -60,8 +63,8 @@ pub fn form_syntax_tree(token_stream: Vec<Token>) -> Result<Node, GenError> {
 				} else if matches!(p.as_ref().unwrap().get_type(), Tokens::OpenBracket) {
 					break
 				}
-				let node1_raw = output_stack.pop();
 				let node2_raw = output_stack.pop();
+				let node1_raw = output_stack.pop();
 				if node1_raw.is_none() || node2_raw.is_none() {
 					return Err(GenError::InvalidMath) 
 				}
@@ -70,22 +73,25 @@ pub fn form_syntax_tree(token_stream: Vec<Token>) -> Result<Node, GenError> {
 
 				output_stack.push(Node::new_w_children(p.take().unwrap(), node1, node2));
 			}
+			continue
 		}
-			// if a higher priority, push to op stack
-		else if output_stack.is_empty() || get_priority(i.get_type()) > get_priority(output_stack[output_stack.len()-1].node_type) {
-			operator_stack.push(i)
-		}
-			// if lower priority, pop top two nodes from output stack, create new node, and push
+			// if a lower priority, push to op stack
 		else {
-			let node1_raw = output_stack.pop();
-			let node2_raw = output_stack.pop();
-			if node1_raw.is_none() || node2_raw.is_none() {
-				return Err(GenError::InvalidMath) 
-			}
-			let node1 = node1_raw.unwrap();
-			let node2 = node2_raw.unwrap();
+			while !operator_stack.is_empty() && get_priority(i.get_type()) < get_priority(operator_stack[operator_stack.len()-1].get_type()) {
+				// if higher priority, pop top two nodes from output stack, create new node, and push
+				let top_op = operator_stack.pop().unwrap();
+				let node2_raw = output_stack.pop();
+				let node1_raw = output_stack.pop();
+				if node1_raw.is_none() || node2_raw.is_none() {
+					return Err(GenError::InvalidMath) 
+				}
+				let node2 = node2_raw.unwrap();
+				let node1 = node1_raw.unwrap();
 
-			output_stack.push(Node::new_w_children(i, node1, node2));
+				output_stack.push(Node::new_w_children(top_op, node1, node2));
+			}
+
+			operator_stack.push(i);
 		}
 	}
 
@@ -95,14 +101,13 @@ pub fn form_syntax_tree(token_stream: Vec<Token>) -> Result<Node, GenError> {
 		if matches!(i.get_type(), Tokens::OpenBracket) {
 			return Err(GenError::InvalidMath)
 		}
-		let node1_raw = output_stack.pop();
 		let node2_raw = output_stack.pop();
+		let node1_raw = output_stack.pop();
 		if node1_raw.is_none() || node2_raw.is_none() {
 			return Err(GenError::InvalidMath) 
 		}
-		let node1 = node1_raw.unwrap();
 		let node2 = node2_raw.unwrap();
-
+		let node1 = node1_raw.unwrap();
 		output_stack.push(Node::new_w_children(i, node1, node2));
 	}
 	
